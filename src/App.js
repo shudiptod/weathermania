@@ -1,18 +1,25 @@
 import axios from "axios";
 import React, { useState, useEffect } from 'react';
 import Search from './Search'
-import {Card, Container} from 'react-bootstrap';
+import { Card, Container, Row, Col } from 'react-bootstrap';
+
 import 'bootstrap/dist/css/bootstrap.min.css'
 
-import './App.css';
+import './App.css'
 
 function App() {
 
   const [latitude, setLatitude] = useState(0);
   const [longitude, setLongitude] = useState(0);
-  const [weather, setWeather] = useState('');
+
+  const [weather_1, setWeather_1] = useState('');
+  const [icon_1, setIcon_1] = useState('');
+  const [weather_2, setWeather_2] = useState('');
+  const [icon_2, setIcon_2] = useState('');
+
   const [temperature, setTemperature] = useState(0);
   const [cityName, setCityName] = useState('');
+
   const [query, setQuery] = useState('');
   const [isloading, SetIsLoading] = useState(true);
   const [flag, setFlag] = useState(false);
@@ -35,18 +42,39 @@ function App() {
             //console.log(res.data);
             setTemperature(res.data.main.temp);
             setCityName(res.data.name);
-            setWeather(res.data.weather[0].main);
+            setWeather_1(res.data.weather[0].description);
+            setIcon_1(`http://openweathermap.org/img/wn/${res.data.weather[0].icon}@2x.png`);
+
+            if (res.data.weather[1] !== undefined) {
+              setWeather_2(res.data.weather[1].description);
+              setIcon_2(`http://openweathermap.org/img/wn/${res.data.weather[1].icon}@2x.png`);
+              console.log(weather_2);
+            }
+            else {
+              console.log("no second");
+            }
+
             SetIsLoading(false);
 
           }
-          else if (query==='' && flag === false) {
+          else if (query === '' && flag === false) {
             SetIsLoading(true);
             await window.navigator.geolocation.getCurrentPosition(savePositionToState);
             const res = await axios.get(`https://api.openweathermap.org/data/2.5/weather?lat=${latitude}&lon=${longitude}&units=metric&appid=1c80d4c4a37d47802e1660be6d8f52de`);
             console.log(res.data);
             setTemperature(res.data.main.temp);
             setCityName(res.data.name);
-            setWeather(res.data.weather[0].main);
+            setWeather_1(res.data.weather[0].description);
+            setIcon_1(`http://openweathermap.org/img/wn/${res.data.weather[0].icon}@2x.png`);
+
+            if (res.data.weather[1] !== undefined) {
+              setWeather_2(res.data.weather[1].description);
+              setIcon_2(`http://openweathermap.org/img/wn/${res.data.weather[1].icon}@2x.png`);
+            }
+            else {
+              console.log("no second");
+            }
+
             SetIsLoading(false);
             setFlag(true);
           }
@@ -55,7 +83,17 @@ function App() {
             const res = await axios.get(`https://api.openweathermap.org/data/2.5/weather?q=${query}&units=metric&appid=1c80d4c4a37d47802e1660be6d8f52de`);
             setTemperature(res.data.main.temp);
             setCityName(res.data.name);
-            setWeather(res.data.weather[0].main);
+
+            setWeather_1(res.data.weather[0].description);
+            setIcon_1(`http://openweathermap.org/img/wn/${res.data.weather[0].icon}@2x.png`);
+
+            if (res.data.weather[1] !== undefined) {
+              setWeather_2(res.data.weather[1].description);
+              setIcon_2(`http://openweathermap.org/img/wn/${res.data.weather[1].icon}@2x.png`);
+            }
+            else {
+              console.log("no second");
+            }
             SetIsLoading(false);
           }
 
@@ -73,41 +111,75 @@ function App() {
   return (
     isloading ?
       (
-        <Container className="shadow-lg p-3 mb-5 bg-white rounded" style={{width:'18rem','marginTop':'150px' ,padding:'10px'}} >
-        <Card style={{ width: '100%' }}>
-        <Card.Body>
-          <Card.Title style={{'alignText':'center','paddingLeft':'20px'}}>Weather Mania</Card.Title>
+        <Container className="container-width shadow-lg p-3 bg-white rounded text-center">
+          <Card style={{ width: '100%' }}>
+            <Card.Body>
+              <Card.Title className="text-center my-4"><h2>Weather Mania </h2></Card.Title>
+              <Search getQuery={(q) => {
+                setQuery(q);
+              }} />
+              <hr />
+              <Card.Text style={{ padding: '20px', color: 'green' }}>
 
-          <Search getQuery={(q) => {
-            setQuery(q);
-          }} />
-          <Card.Text style={{padding:'20px', color:'green'}}>
-
-          Loading...
-
-          </Card.Text>
-        </Card.Body>
-      </Card >
-      </Container>)
+                Loading...
+                </Card.Text>
+            </Card.Body>
+          </Card >
+        </Container>)
       :
       (
-        <Container className="shadow-lg p-3 mb-5 bg-white rounded" style={{width:'18rem','marginTop':'150px',padding:'10px'}} >
-        <Card style={{ width: '100%' }}>
-          <Card.Body>
-            <Card.Title style={{'alignText':'center','paddingLeft':'20px',paddingBottom:'10px'}}> Weather Mania </Card.Title>
+        <Container className="container-width shadow-lg p-2 bg-white rounded" >
+          <Card style={{ width: '100%' }}>
+            <Card.Body>
+              <Card.Title className="text-center my-4"><h2>Weather Mania </h2></Card.Title>
 
-            <Search getQuery={(q) => {
-              setQuery(q);
-            }} />
-            <Card.Text style={{padding:'20px'}}>
-              <p>{cityName}</p>
-              <p>{temperature}°C</p>
-              <p>{weather}</p>
+              <Search getQuery={(q) => {
+                setQuery(q);
+              }} />
+              <hr />
+              <Card.Text>
 
-            </Card.Text>
-          </Card.Body>
-        </Card >
-        </Container>
+                <Container>
+                  <Row className="align-items-center">
+                    <Col lg={7}>
+                      <h3 >{cityName}</h3>
+                    </Col>
+                    <Col lg={5}>
+                      <h3 >{temperature}°C</h3>
+                    </Col>
+
+                  </Row>
+
+                  <Row className="align-items-center">
+                    <Col>
+                      <h4>{weather_1}</h4>
+                    </Col>
+                    <Col className="w-50">
+                      <img className="w-75 ml-3" src={icon_1} alt="" />
+                    </Col>
+
+                  </Row>
+                  {weather_2 !== "" ?
+                    (
+                      <Row className="align-items-center ">
+                        <Col>
+                          <h4>{weather_2}</h4>
+                        </Col>
+                        <Col className="w-50">
+                          <img className="w-75 ml-3" src={icon_2} alt="" />
+                        </Col>
+
+                      </Row>
+                    ) : (<> </>)
+                  }
+
+
+                </Container>
+
+              </Card.Text>
+            </Card.Body>
+          </Card >
+        </Container >
       )
   );
 }
