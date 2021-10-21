@@ -34,12 +34,12 @@ function App() {
       const fetchWeather = async () => {
 
         try {
-          console.log('f--/');
+
           if (query === '' && flag === true) {
             SetIsLoading(true);
             const res = await axios.get(`https://api.openweathermap.org/data/2.5/weather?lat=${latitude}&lon=${longitude}&units=metric&appid=1c80d4c4a37d47802e1660be6d8f52de`);
 
-            //console.log(res.data);
+
             setTemperature(res.data.main.temp);
             setCityName(res.data.name);
             setWeather_1(res.data.weather[0].description);
@@ -48,10 +48,10 @@ function App() {
             if (res.data.weather[1] !== undefined) {
               setWeather_2(res.data.weather[1].description);
               setIcon_2(`http://openweathermap.org/img/wn/${res.data.weather[1].icon}@2x.png`);
-              console.log(weather_2);
+
             }
             else {
-              console.log("no second");
+              //console.log("no second");
             }
 
             SetIsLoading(false);
@@ -61,7 +61,7 @@ function App() {
             SetIsLoading(true);
             await window.navigator.geolocation.getCurrentPosition(savePositionToState);
             const res = await axios.get(`https://api.openweathermap.org/data/2.5/weather?lat=${latitude}&lon=${longitude}&units=metric&appid=1c80d4c4a37d47802e1660be6d8f52de`);
-            console.log(res.data);
+
             setTemperature(res.data.main.temp);
             setCityName(res.data.name);
             setWeather_1(res.data.weather[0].description);
@@ -72,7 +72,7 @@ function App() {
               setIcon_2(`http://openweathermap.org/img/wn/${res.data.weather[1].icon}@2x.png`);
             }
             else {
-              console.log("no second");
+              //console.log("no second");
             }
 
             SetIsLoading(false);
@@ -92,7 +92,7 @@ function App() {
               setIcon_2(`http://openweathermap.org/img/wn/${res.data.weather[1].icon}@2x.png`);
             }
             else {
-              console.log("no second");
+              //console.log("no second");
             }
             SetIsLoading(false);
           }
@@ -111,15 +111,15 @@ function App() {
   return (
     isloading ?
       (
-        <Container className="container-width shadow-lg p-3 bg-white rounded text-center">
+        <Container className="container-width shadow-lg p-3 bg-dark rounded text-center" style={{ opacity: '80%' }}>
           <Card style={{ width: '100%' }}>
-            <Card.Body>
-              <Card.Title className="text-center my-4"><h2>Weather Mania </h2></Card.Title>
+            <Card.Body className="bg-dark">
+              <Card.Title className="text-center my-4 text-white"><h2>Weather Mania </h2></Card.Title>
               <Search getQuery={(q) => {
                 setQuery(q);
               }} />
               <hr />
-              <Card.Text style={{ padding: '20px', color: 'green' }}>
+              <Card.Text style={{ textColor: 'white', padding: '20px', color: 'green' }}>
 
                 Loading...
                 </Card.Text>
@@ -128,16 +128,16 @@ function App() {
         </Container>)
       :
       (
-        <Container className="container-width shadow-lg p-2 bg-white rounded" >
+        <Container className="container-width shadow-lg p-2 bg-dark text-white rounded" style={{ opacity: '80%' }}>
           <Card style={{ width: '100%' }}>
-            <Card.Body>
-              <Card.Title className="text-center my-4"><h2>Weather Mania </h2></Card.Title>
+            <Card.Body className="bg-dark">
+              <Card.Title className="text-center text-white my-4"><h2>Weather Mania </h2></Card.Title>
 
               <Search getQuery={(q) => {
                 setQuery(q);
               }} />
               <hr />
-              <Card.Text>
+              <Card.Text class="text-white">
 
                 <Container>
                   <Row className="align-items-center">
@@ -155,7 +155,7 @@ function App() {
                       <h4>{weather_1}</h4>
                     </Col>
                     <Col className="w-50">
-                      <img className="w-75 ml-3" src={icon_1} alt="" />
+                      <img className="w-75 ml-3 shadow " src={icon_1} alt="" />
                     </Col>
 
                   </Row>
